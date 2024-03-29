@@ -1,15 +1,6 @@
 "Define the constant values used throughout the project."
 module Constants
 
-# Physical constants
-const γ_air = 1.4        # Adiabatic index or ratio of specific heats (dry air at 20ºC).
-const R_air = 287.05287  # Specific gas constant for dry air [J/(Kg*K)].
-const g     = 9.80665    # Gravity acceleration at Earth surface at 45º geodetic latitude [m/s²].
-
-# Reference quantities
-const p_ref = 101325  # Reference atmospheric pressure [Pa].
-const T_ref = 288     # Reference temperature [K].
-
 # Conversion factors
 const in2m     = 0.0254       # Inch            ->  meter.
 const ft2m     = 0.3048       # Foot            ->  meter.

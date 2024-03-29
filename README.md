@@ -1,13 +1,15 @@
-# BEMT 
+# BEMT 🛨
 
 This repository holds all the code written for the project carried out as part
 of the Aerospace Propulsion course (AERO0014), academic year 2023-2024.
 
 This repository consists of two elements.
- - A julia package named `BEMT`. It provides tools and computation methods
-   that are based on the blade element momentum theory.
-- An executable file named `run.jl`. It directly uses the `BEMT` library to
-  compute the quantities needed to fulfill the project requirements.
+ - A julia package named `BEMT`, the source code of which lies in the `src/`
+   directory. It provides tools and computation methods that are based on the
+   blade element momentum theory.
+- Executable scripts that lies in the `run/` directory. It directly uses the
+  `BEMT` library to compute the quantities needed to fulfill the project
+  requirements.
 
 ## Installation
 
@@ -31,7 +33,7 @@ julia --project -e "using Pkg; Pkg.instantiate();"
 From the top level directory (where this README lies), just run the main project
 file:
 ```sh
-julia --project run.jl
+julia run.jl
 ```
 
 ## Advanced usage
@@ -39,7 +41,7 @@ julia --project run.jl
 ### Run the project file with custom parameters
 
 ```sh
-julia --project run.jl -h
+julia run.jl -h
 ```
 
 ### Use and extend the package
@@ -49,5 +51,3 @@ using BEMT
 ```
 
 ## Project architecture
-
-Just develop the BEMT tree.
