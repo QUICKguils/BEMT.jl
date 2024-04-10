@@ -1,18 +1,22 @@
 "Define the constant values used throughout the project."
 module Constants
 
-# Conversion factors
-const in2m     = 0.0254       # Inch            ->  meter.
-const ft2m     = 0.3048       # Foot            ->  meter.
-const mi2m     = 1609.344     # Mile            ->  meter.
-const nmi2m    = 1852         # Nautical mile   ->  meter.
-const mph2kmh  = 1609.344     # Miles per hour  ->  kilometers per hour.
-const mph2ms   = 0.44704      # Miles per hour  ->  meters per second.
-const kn2kmh   = 1.852        # Knot            ->  kilometers per hour.
-const kn2ms    = 0.514444     # Knot            ->  meters per second.
-const slug2kg  = 14.59390     # Slug            ->  kilogram.
-const lb2kg    = 0.45359237   # Pound mass      ->  kilogram.
-const lbf2n    = 4.448222     # Pound force     ->  newton.
-const usgal2m3 = 3.785411784  # US gallon       ->  cubic meter.
+# TODO: cleanup this module
 
-end # module Constants
+# Conversion factors
+const IN2M     = 0.0254       # Inch                  -> meter.
+const FT2M     = 0.3048       # Foot                  -> meter.
+const MI2M     = 1609.344     # Mile                  -> meter.
+const NMI2M    = 1852         # Nautical mile         -> meter.
+const MPH2KMH  = 1.609344     # Miles per hour        -> kilometer per hour.
+const MPH2MS   = 0.44704      # Miles per hour        -> meter per second.
+const KN2KMH   = 1.852        # Knot                  -> kilometer per hour.
+const KN2MS    = 0.514444     # Knot                  -> meter per second.
+const SLUG2KG  = 14.59390     # Slug                  -> kilogram.
+const LB2KG    = 0.45359237   # Pound mass            -> kilogram.
+const LBF2N    = 4.448222     # Pound force           -> newton.
+const USGAL2M3 = 3.785411784  # US gallon             -> cubic meter.
+const RPM2RADS = π/30         # Revolution per minute -> radian per second.
+const DEG2RAD  = π/180        # Degree                -> radian.
+
+end  # module Constants
