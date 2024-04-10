@@ -70,8 +70,6 @@ function bem(prop::Propeller, oper::OperatingConditions; sdiv=20)
 
     # Total thrust and torque exerted by the propeller.
     # NOTE: this assumes that the blades do not influence each other.
-    # This is a safe assumption, as long as the nuber of blades
-    # is not too high.
     thrust = sum(thrust_dist) * prop.geometry.n_blades
     torque = sum(torque_dist) * prop.geometry.n_blades
 
@@ -95,6 +93,7 @@ function local_bem(geom::LocalGeometry, airfoil::AirfoilPolar, oper::OperatingCo
     vu2p = vu2m
 
     # Initial ...
+    # TODO: better management of the local scope of the `while`.
     n_iter = 0
     thrust = torque = vu2p = va2 = w2 = 0
 
@@ -114,14 +113,14 @@ function local_bem(geom::LocalGeometry, airfoil::AirfoilPolar, oper::OperatingCo
         w2 = √(wa2^2 + wu2^2)
         β2 = atan(wu2/wa2)
 
-        # TODO: this is messy
+        # Determine the angle of attack and the reynolds number.
         stagger(r::Real) = atan(geom.geopitch/(2π*r))
-        pitch = stagger(geom.r_loc) - stagger(0.75*geom.diameter) + oper.θ75
+        pitch = stagger(geom.r_loc) - stagger(0.75*geom.diameter/2) + oper.θ75
         aoa = pitch - (π/2 + β2)
-        @show (pitch|>rad2deg) #(aoa|>rad2deg)
-        Re  = oper.ρ * w2 * geom.chord / oper.μ
+        Re = oper.ρ * w2 * geom.chord / oper.μ
 
-        # PERF: maybe keep lerp creation outside the loop
+        # Get the lift and drag coefficient from polar data.
+        # PERF: maybe keep lerp creation outside of the loop
         lerp_cl = linear_interpolation((airfoil.aoa, airfoil.Re), airfoil.cl)
         lerp_cd = linear_interpolation((airfoil.aoa, airfoil.Re), airfoil.cd)
         cl = lerp_cl(aoa, Re)
@@ -130,8 +129,8 @@ function local_bem(geom::LocalGeometry, airfoil::AirfoilPolar, oper::OperatingCo
         lift = 1//2 * oper.ρ * w2^2 * geom.chord * geom.dr * cl
         drag = 1//2 * oper.ρ * w2^2 * geom.chord * geom.dr * cd
 
-        thrust =  lift*sin(β2) + drag*cos(β2)
-        torque = (lift*cos(β2) - drag*sin(β2)) * geom.r_loc
+        thrust = -(lift*sin(β2) + drag*cos(β2))
+        torque =  (lift*cos(β2) - drag*sin(β2)) * geom.r_loc
 
         # New approximations for the absolute velocity components
         va3_new  = v1 + thrust/mass_flow
