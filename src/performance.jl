@@ -10,7 +10,7 @@ end
 
 struct LocalGeometry
     diameter::Real  # Diameter of the propeller [m]
-    r_loc::Real     # Radial location of [m]
+    r::Real         # Radial location of [m]
     dr::Real        # Streamtube width [m]
     chord::Real     # Chord [m]
     geopitch::Real  # Geometric pitch [m]
@@ -36,17 +36,21 @@ for the specified operating conditions `oper` and subdivisions `sdiv` in the bla
 """
 function bem(prop::Propeller, oper::OperatingConditions; sdiv=20)
 
-    # Subdivise the propeller span.
+    # Subdivise the propeller span
     r_min = prop.geometry.stations[1]
     r_max = prop.geometry.diameter/2
     radii = range(r_min, r_max, sdiv)
     dr    = radii[2] - radii[1]  # TODO: not robust: fails for non-linear range
 
     # Get geometry parameters for the desired radii
-    chords  = linear_interpolation(prop.geometry.stations, prop.geometry.chords,     extrapolation_bc=Line())(radii)
-    pitches = linear_interpolation(prop.geometry.stations, prop.geometry.geopitches, extrapolation_bc=Line())(radii)
+    chords  = linear_interpolation(prop.geometry.stations,
+                                   prop.geometry.chords,
+                                   extrapolation_bc=Line())(radii)
+    pitches = linear_interpolation(prop.geometry.stations,
+                                   prop.geometry.geopitches,
+                                   extrapolation_bc=Line())(radii)
 
-    # Preallocate the forces and speeds distributions.
+    # Preallocate the forces and speeds distributions
     thrust_dist = zeros(length(radii))
     torque_dist = zeros(length(radii))
     vu2p_dist   = zeros(length(radii))
@@ -54,15 +58,15 @@ function bem(prop::Propeller, oper::OperatingConditions; sdiv=20)
     w2_dist     = zeros(length(radii))
 
 
-    # Compute the thrust and torque for all of these locations.
-    # TODO: Maybe a bit cumbersome to use enumerate zip here
-    for (i, (r, c, p)) ∈ enumerate(zip(radii, chords, pitches))
+    # Compute the thrust and torque for all of these locations
+    for i ∈ eachindex(radii)
 
-        geom = LocalGeometry(prop.geometry.diameter, r, dr, c, p)
+        geom = LocalGeometry(prop.geometry.diameter, radii[i], dr, chords[i], pitches[i])
 
         local_bem_sol = local_bem(geom, prop.airfoil, oper)
         thrust_dist[i] = local_bem_sol[1]
         torque_dist[i] = local_bem_sol[2]
+        # TODO: clean: see which speeds are relevant to keep
         vu2p_dist[i]   = local_bem_sol[3]
         va2_dist[i]    = local_bem_sol[4]
         w2_dist[i]     = local_bem_sol[5]
@@ -84,20 +88,23 @@ Detemine the momentum balance in one stream tube, for one blade.
 function local_bem(geom::LocalGeometry, airfoil::AirfoilPolar, oper::OperatingConditions;
                    rtol=1e-3, atol=1e-2, maxiter=50)
 
+    # FIX: crashes for v∞=0m/s
+    # The mass flow in null, hence vu2p_new is NaN.
+
     # Set the upstream values
     v1 = oper.v∞
     vu2m = 0
 
-    # Initial guesstimates
+    # Initial speed guesstimates
     va3 = v1
     vu2p = vu2m
 
-    # Initial ...
+    # Initialize computed quantities
     # TODO: better management of the local scope of the `while`.
     n_iter = 0
     thrust = torque = vu2p = va2 = w2 = 0
 
-    # Determine forces and velocities iteratively.
+    # Determine forces and velocities iteratively
     while true
 
         n_iter += 1
@@ -105,24 +112,25 @@ function local_bem(geom::LocalGeometry, airfoil::AirfoilPolar, oper::OperatingCo
         # Velocity components at the propeller disk
         va2 = wa2 = (v1 + va3) / 2
         vu2 = vu2p / 2
-        wu2 = vu2 - oper.Ω*geom.r_loc
+        wu2 = vu2 - oper.Ω*geom.r
 
-        mass_flow = 2π * geom.r_loc * geom.dr * va2
+        mass_flow = 2π * geom.r * geom.dr * va2
 
         # New estimates for w2 and β2
         w2 = √(wa2^2 + wu2^2)
         β2 = atan(wu2/wa2)
 
         # Determine the angle of attack and the reynolds number.
+        # TODO: check impl of geopitch
         stagger(r::Real) = atan(geom.geopitch/(2π*r))
-        pitch = stagger(geom.r_loc) - stagger(0.75*geom.diameter/2) + oper.θ75
+        pitch = stagger(geom.r) - stagger(0.75*geom.diameter/2) + oper.θ75
         aoa = pitch - (π/2 + β2)
         Re = oper.ρ * w2 * geom.chord / oper.μ
 
         # Get the lift and drag coefficient from polar data.
         # PERF: maybe keep lerp creation outside of the loop
-        lerp_cl = linear_interpolation((airfoil.aoa, airfoil.Re), airfoil.cl)
-        lerp_cd = linear_interpolation((airfoil.aoa, airfoil.Re), airfoil.cd)
+        lerp_cl = linear_interpolation((airfoil.aoa, airfoil.Re), airfoil.cl, extrapolation_bc=Line())
+        lerp_cd = linear_interpolation((airfoil.aoa, airfoil.Re), airfoil.cd, extrapolation_bc=Line())
         cl = lerp_cl(aoa, Re)
         cd = lerp_cd(aoa, Re)
 
@@ -130,14 +138,15 @@ function local_bem(geom::LocalGeometry, airfoil::AirfoilPolar, oper::OperatingCo
         drag = 1//2 * oper.ρ * w2^2 * geom.chord * geom.dr * cd
 
         thrust = -(lift*sin(β2) + drag*cos(β2))
-        torque =  (lift*cos(β2) - drag*sin(β2)) * geom.r_loc
+        torque =  (lift*cos(β2) - drag*sin(β2)) * geom.r
 
         # New approximations for the absolute velocity components
         va3_new  = v1 + thrust/mass_flow
-        vu2p_new = torque / (mass_flow * geom.r_loc)
+        vu2p_new = torque / (mass_flow * geom.r)
 
         # Stop the iterations if the speeds have sufficiently converged, or if the maximum
         # number of iterations has been reached.
+        # TODO: log a warn if we reach maxiter
         n_iter == maxiter && break
         isapprox(va3,  va3_new,  atol=atol, rtol=rtol) &&
         isapprox(vu2p, vu2p_new, atol=atol, rtol=rtol) && break

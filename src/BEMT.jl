@@ -4,11 +4,6 @@
 # /____/___/_/  /_/ /_/.jl
 #           Guilain Ernotte
 
-# TODO:
-# - see if it is really necessary to have inner modules, instead of
-#   simple source file that are included here and share the same BEMT scope.
-#   Having inner namespaces like this complexify the code.
-
 """
     BEMT
 Blade Element Momentum Techniques.
@@ -26,6 +21,6 @@ include("propellers.jl")
 export Propeller, PropellerGeometry, AirfoilPolar
 
 include("performance.jl")
-export bem, OperatingConditions
+export OperatingConditions, bem
 
 end  # Module BEMT
