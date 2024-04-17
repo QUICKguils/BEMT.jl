@@ -118,21 +118,23 @@ function local_bem(geom::LocalGeometry, airfoil::AirfoilPolar, oper::OperatingCo
 
         # New estimates for w2 and β2
         w2 = √(wa2^2 + wu2^2)
-        β2 = atan(wu2/wa2)
+        β2 = atan(wu2/wa2)  # TODO: check atan or atan2
 
-        # Determine the angle of attack and the reynolds number.
+        # Determine the angle of attack and the reynolds number
         # TODO: check impl of geopitch
         stagger(r::Real) = atan(geom.geopitch/(2π*r))
         pitch = stagger(geom.r) - stagger(0.75*geom.diameter/2) + oper.θ75
         aoa = pitch - (π/2 + β2)
         Re = oper.ρ * w2 * geom.chord / oper.μ
 
-        # Get the lift and drag coefficient from polar data.
+        # Get the lift and drag coefficient from polar data
         # PERF: maybe keep lerp creation outside of the loop
-        lerp_cl = linear_interpolation((airfoil.aoa, airfoil.Re), airfoil.cl, extrapolation_bc=Line())
-        lerp_cd = linear_interpolation((airfoil.aoa, airfoil.Re), airfoil.cd, extrapolation_bc=Line())
-        cl = lerp_cl(aoa, Re)
-        cd = lerp_cd(aoa, Re)
+        cl = linear_interpolation((airfoil.aoa, airfoil.Re),
+                                  airfoil.cl,
+                                  extrapolation_bc=Line())(aoa, Re)
+        cd = linear_interpolation((airfoil.aoa, airfoil.Re),
+                                  airfoil.cd,
+                                  extrapolation_bc=Line())(aoa, Re)
 
         lift = 1//2 * oper.ρ * w2^2 * geom.chord * geom.dr * cl
         drag = 1//2 * oper.ρ * w2^2 * geom.chord * geom.dr * cd
@@ -145,13 +147,13 @@ function local_bem(geom::LocalGeometry, airfoil::AirfoilPolar, oper::OperatingCo
         vu2p_new = torque / (mass_flow * geom.r)
 
         # Stop the iterations if the speeds have sufficiently converged, or if the maximum
-        # number of iterations has been reached.
+        # number of iterations has been reached
         # TODO: log a warn if we reach maxiter
         n_iter == maxiter && break
         isapprox(va3,  va3_new,  atol=atol, rtol=rtol) &&
         isapprox(vu2p, vu2p_new, atol=atol, rtol=rtol) && break
 
-        # Otherwise update the speeds for the next iteration.
+        # Otherwise update the speeds for the next iteration
         vu2p = vu2p_new
         va3  = va3_new
     end

@@ -21,6 +21,6 @@ include("propellers.jl")
 export Propeller, PropellerGeometry, AirfoilPolar
 
 include("performance.jl")
-export OperatingConditions, bem
+export OperatingConditions, BemSolution, bem
 
 end  # Module BEMT
