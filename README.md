@@ -31,7 +31,7 @@ julia --project -e "using Pkg; Pkg.instantiate();"
 ## Basic usage
 
 From the `run/` directory, just execute the main project file:
-```sh
+```
 julia --project -i run.jl
 ```
 
@@ -59,7 +59,7 @@ optional arguments:
 
 For example, to run the two last part of the project without creating the
 associated plots, run:
-```sh
+```
 julia --project -i run.jl --part 2 3 --plot false
 ```
 
