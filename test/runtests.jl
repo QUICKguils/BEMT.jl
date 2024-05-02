@@ -2,6 +2,6 @@ using BEMT
 using Test
 
 @testset "BEMT.jl" begin
-    # I have a bit la flemme to do proper code coverage now TBH
     # TODO: write basic sanity checks
+    # Trust me bro my code runs like butter
 end

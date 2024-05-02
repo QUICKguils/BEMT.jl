@@ -2,7 +2,7 @@
 
 julia_version = "1.10.2"
 manifest_format = "2.0"
-project_hash = "b0da48641ef4686747f89c29722ebb5c64380e1e"
+project_hash = "70dbd3e17060cdea95807fbdfae2a7bfdc895f7f"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -99,7 +99,7 @@ uuid = "39de3d68-74b9-583c-8d2d-e117c070f3a9"
 version = "0.4.7"
 
 [[deps.BEMT]]
-deps = ["Interpolations"]
+deps = ["Interpolations", "Logging"]
 path = ".."
 uuid = "43670391-414f-4d66-8710-74f833c64013"
 version = "1.0.0-DEV"
@@ -232,9 +232,9 @@ version = "1.16.0"
 
 [[deps.DataStructures]]
 deps = ["Compat", "InteractiveUtils", "OrderedCollections"]
-git-tree-sha1 = "0f4b5d62a88d8f59003e43c25a8a90de9eb76317"
+git-tree-sha1 = "97d79461925cdb635ee32116978fc735b9463a39"
 uuid = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
-version = "0.18.18"
+version = "0.18.19"
 
 [[deps.DataValueInterfaces]]
 git-tree-sha1 = "bfc1187b79289637fa0ef6d4436ebdfe6905cbd6"
@@ -387,9 +387,9 @@ weakdeps = ["PDMats", "SparseArrays", "Statistics"]
 
 [[deps.FiniteDiff]]
 deps = ["ArrayInterface", "LinearAlgebra", "Requires", "Setfield", "SparseArrays"]
-git-tree-sha1 = "bc0c5092d6caaea112d3c8e3b238d61563c58d5f"
+git-tree-sha1 = "2de436b72c3422940cbe1367611d137008af7ec3"
 uuid = "6a86dc24-6348-571c-b903-95158fe2bd41"
-version = "2.23.0"
+version = "2.23.1"
 
     [deps.FiniteDiff.extensions]
     FiniteDiffBandedMatricesExt = "BandedMatrices"
@@ -476,9 +476,9 @@ version = "0.9.10"
 
 [[deps.GeoInterface]]
 deps = ["Extents"]
-git-tree-sha1 = "d4f85701f569584f2cff7ba67a137d03f0cfb7d0"
+git-tree-sha1 = "801aef8228f7f04972e596b09d4dba481807c913"
 uuid = "cf35fbd7-0cd7-5166-be24-54bfbe79505f"
-version = "1.3.3"
+version = "1.3.4"
 
 [[deps.GeometryBasics]]
 deps = ["EarCut_jll", "Extents", "GeoInterface", "IterTools", "LinearAlgebra", "StaticArrays", "StructArrays", "Tables"]
@@ -602,9 +602,9 @@ version = "0.15.1"
 
 [[deps.IntervalArithmetic]]
 deps = ["CRlibm_jll", "MacroTools", "RoundingEmulator"]
-git-tree-sha1 = "a066535c05e21f8e18b18e759a5d790b7a706399"
+git-tree-sha1 = "23ddd329f4a2a65c7a55b91553b60849bd038575"
 uuid = "d1acc4aa-44c8-5952-acd4-ba5d80a2a253"
-version = "0.22.10"
+version = "0.22.11"
 weakdeps = ["DiffRules", "ForwardDiff", "RecipesBase"]
 
     [deps.IntervalArithmetic.extensions]
@@ -929,9 +929,9 @@ uuid = "510215fc-4207-5dde-b226-833fc4488ee2"
 version = "0.5.5"
 
 [[deps.OffsetArrays]]
-git-tree-sha1 = "6a731f2b5c03157418a20c12195eb4b74c8f8621"
+git-tree-sha1 = "e64b4f5ea6b7389f6f046d13d4896a8f9c1ba71e"
 uuid = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
-version = "1.13.0"
+version = "1.14.0"
 weakdeps = ["Adapt"]
 
     [deps.OffsetArrays.extensions]
@@ -1077,9 +1077,9 @@ version = "0.1.2"
 
 [[deps.Polynomials]]
 deps = ["LinearAlgebra", "RecipesBase", "Setfield", "SparseArrays"]
-git-tree-sha1 = "a9c7a523d5ed375be3983db190f6a5874ae9286d"
+git-tree-sha1 = "81a2a9462003a423fdc59e2a3ff84cde93c4637b"
 uuid = "f27b6e38-b328-58d1-80ce-0feddd5e7a45"
-version = "4.0.6"
+version = "4.0.7"
 
     [deps.Polynomials.extensions]
     PolynomialsChainRulesCoreExt = "ChainRulesCore"

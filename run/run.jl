@@ -1,8 +1,7 @@
 # BEMT project - main executable script
 #
-# In your shell, try to type:
+# to get usage help, try to type in your shell (from this current file directory):
 # > julia --project run.jl --help
-# from this current file directory to get usage help.
 
 using ArgParse
 
@@ -12,7 +11,6 @@ include("Part2.jl")
 include("Part3.jl")
 
 function parse_commandline(args)
-
     s = ArgParseSettings("Execution script of the BEMT project.")
 
     @add_arg_table! s begin
@@ -44,7 +42,9 @@ function main(args)
     1 ∈ parsed_args["part"] && Part1.main(parsed_args)
     2 ∈ parsed_args["part"] && Part2.main(parsed_args)
     3 ∈ parsed_args["part"] && Part3.main(parsed_args)
+
+    return nothing
 end
 
-# Run this badboy bruh
+# Run this badboy
 main(ARGS)

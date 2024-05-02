@@ -1,6 +1,6 @@
 """Hold the geometric description of a propeller."""
 struct PropellerGeometry
-    diameter::Real            # Diameter [m]
+    span::Real                # Span of one blade [m]
     n_blades::Integer         # Number of blades
     stations::Vector{Real}    # Station locations [m]
     chords::Vector{Real}      # Chords evaluated at stations [m]
@@ -8,7 +8,7 @@ struct PropellerGeometry
 end
 
 """
-Tabulated values of cl and cd.
+Tabulated airfoil polar data.
 
 Contain the tabulated values of cl and cd, for the corresponding sampled
 angles of attack and Reynolds numbers.

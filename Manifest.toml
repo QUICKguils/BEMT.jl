@@ -2,7 +2,7 @@
 
 julia_version = "1.10.2"
 manifest_format = "2.0"
-project_hash = "c6ab0a635a3f130d16af751bbfc513983e972861"
+project_hash = "9fb208c9ed26179657a67eebc7f455032d1592da"
 
 [[deps.Adapt]]
 deps = ["LinearAlgebra", "Requires"]
@@ -74,6 +74,9 @@ uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 [[deps.LinearAlgebra]]
 deps = ["Libdl", "OpenBLAS_jll", "libblastrampoline_jll"]
 uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+
+[[deps.Logging]]
+uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 
 [[deps.Mmap]]
 uuid = "a63ad114-7e13-5084-954f-fe012c677804"
