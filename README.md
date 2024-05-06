@@ -85,7 +85,7 @@ julia> include("Part1.jl")
 julia> args = Dict("sdiv" => 20, "plot" => true)
 
 # Run the first part of the project
-julia> sol1, sol2 = Part1.run(args);
+julia> sol1, sol2 = Part1.main(args);
 ```
 Then, include and run as many times as wanted the different project parts in the
 REPL.
