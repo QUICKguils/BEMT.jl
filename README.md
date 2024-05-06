@@ -18,13 +18,13 @@ In order to use this package, a version of Julia (>=1.0.0) have to be
 
 Next, simply clone the project and install the possible dependencies:
 ```sh
-# Clone this repository.
+# Clone this repository
 git clone git@github.com:QUICKguils/BEMT.jl.git
 
-# Go to the project `run/` directory.
+# Go to the project `run/` directory
 cd BEMT.jl/run
 
-# Make sure the environment is ready to use.
+# Make sure the environment is ready to use
 julia --project -e "using Pkg; Pkg.instantiate();"
 ```
 
@@ -35,13 +35,17 @@ From the `run/` directory, just execute the main project file:
 julia --project -i run.jl
 ```
 
+Note that the execution time can be slow for the very first run of the script,
+as Julia needs to precompile the project and its associated dependencies. It is
+thus advised to use the code interactively in a Julia REPL, as explained below.
+
 ## Advanced usage
 
 ### Run the project file with custom parameters
 
 The `-h` flag provides an overview of the available options:
 ```
-julia --project -i run.jl -h
+julia --project run.jl -h
 
 usage: run.jl [--sdiv SDIV] [--part [PART...]] [--plot [PLOT]] [-h]
 
@@ -71,14 +75,17 @@ julia session open and run them in the julia REPL.
 # Enter the Julia REPL, inside the right project environment (`run/` directory)
 julia --project
 
-# Include the module that answers the first part of the project
+# Include the project statement data
+julia> include("Statement.jl")
+
+# Include, for example, the module that answers the first part of the project
 julia> include("Part1.jl")
 
 # Define custom running arguments
-julia> args = Dict("plot" => true);
+julia> args = Dict("sdiv" => 20, "plot" => true)
 
 # Run the first part of the project
-julia> Part1.run(args)
+julia> sol1, sol2 = Part1.run(args);
 ```
 Then, include and run as many times as wanted the different project parts in the
 REPL.
