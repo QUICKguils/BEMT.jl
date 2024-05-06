@@ -124,7 +124,7 @@ function plot_sol(J, C_T, C_P, eta)
         fig[1, 1:2], ax_eta, L"\theta_{75}",
         titleposition=:left, titlegap=20, orientation=:horizontal
     )
-    rowsize!(fig.layout, 2, Auto(0.6))
+    rowsize!(fig.layout, 2, Auto(0.8))
 
     display(fig)
 
