@@ -27,6 +27,8 @@ cd BEMT.jl/run
 # Make sure the environment is ready to use
 julia --project -e "using Pkg; Pkg.instantiate();"
 ```
+Please note that this last step can take some time if Julia has been freshly
+installed on the system.
 
 ## Basic usage
 
