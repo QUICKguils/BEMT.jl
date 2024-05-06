@@ -2,7 +2,6 @@
 module Statement
 
 using DelimitedFiles
-
 using BEMT
 
 "Build the location path for the given resource file."
