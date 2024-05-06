@@ -45,6 +45,7 @@ function reproduce_report(args)
     v∞s     = [Float64[] for _ ∈ eachindex(θ75_range)]
 
     for θ75_index ∈ eachindex(θ75_range)
+        max_thrust = 0
         v∞_index = 1
         Ω = Ω_range[θ75_index]
         v∞ = v∞_range[v∞_index]
@@ -52,6 +53,7 @@ function reproduce_report(args)
         while true
             oper = OperatingConditions(Ω, θ75_range[θ75_index], v∞, ρ, μ)
             sol = bem(Stm.prop, oper, sdiv=args["sdiv"])
+            max_thrust = max(sol.thrust, max_thrust)
 
             sol.thrust <= 0 && break
 
@@ -64,7 +66,9 @@ function reproduce_report(args)
                 v∞_index += 1
                 v∞ = v∞_range[v∞_index]
             else
-                Ω -= 0.03 * Ω  # Decrease every time by 3%. Heuristic value.
+                # Heuristic method for decreasing the rotation speed
+                # Decrease slower when approaching the zero thrust
+                sol.thrust > 0.1*max_thrust ? Ω -= 0.03 * Ω : Ω -= 0.01 * Ω
             end
         end
     end
