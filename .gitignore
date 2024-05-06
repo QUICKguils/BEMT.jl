@@ -2,3 +2,6 @@
 
 # Personnal draft files
 draft.jl
+
+# Generated files for external plotting
+run/out/
