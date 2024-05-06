@@ -19,7 +19,7 @@ In order to use this package, a version of Julia (>=1.0.0) have to be
 Next, simply clone the project and install the possible dependencies:
 ```sh
 # Clone this repository
-git clone git@github.com:QUICKguils/BEMT.jl.git
+git clone https://github.com/QUICKguils/BEMT.jl.git
 
 # Go to the project `run/` directory
 cd BEMT.jl/run
