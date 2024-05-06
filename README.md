@@ -4,7 +4,7 @@ This repository holds all the code written for the project carried out as part
 of the Aerospace Propulsion course (AERO0014), academic year 2023-2024.
 
 This repository consists of two elements.
-- A julia package named `BEMT`. The source code of this package lies in the
+- A Julia package named `BEMT`. The source code of this package lies in the
   `src/` directory. It provides tools and computation methods that are based on
   the blade element momentum theory.
 - The course project files and an executable script. These files lie in the
@@ -27,6 +27,7 @@ cd BEMT.jl/run
 # Make sure the environment is ready to use
 julia --project -e "using Pkg; Pkg.instantiate();"
 ```
+
 Please note that this last step can take some time if Julia has been freshly
 installed on the system.
 
@@ -37,9 +38,10 @@ From the `run/` directory, just execute the main project file:
 julia --project -i run.jl
 ```
 
-Note that the execution time can be slow for the very first run of the script,
-as Julia needs to precompile the project and its associated dependencies. It is
-thus advised to use the code interactively in a Julia REPL, as explained below.
+Note that the execution time of this script is quite slow, as Julia needs to
+re-evaluate the project environment for each execution. If the code has to be
+run more than once, is thus advised to use the code interactively in a Julia
+REPL. See the explanations below.
 
 ## Advanced usage
 
@@ -72,7 +74,7 @@ julia --project -i run.jl --part 2 3 --plot false
 ### Use the code interactively
 
 If some project files need to be repeatedly executed, it is advised to keep a
-julia session open and run them in the julia REPL.
+Julia session open and run them in the Julia REPL.
 ```
 # Enter the Julia REPL, inside the right project environment (`run/` directory)
 julia --project
@@ -91,4 +93,4 @@ julia> sol1, sol2 = Part1.main(args);
 ```
 Then, include and run as many times as wanted the different project parts in the
 REPL.
-Finally, hit `CTRL-D` to quit the julia session.
+Finally, hit `CTRL-D` to quit the Julia session.
