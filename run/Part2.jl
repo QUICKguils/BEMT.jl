@@ -83,9 +83,10 @@ function performance_coefficients(thrusts, powers, Ωs, v∞s)
     eta = [Float64[] for _ ∈ eachindex(θ75_range)]  # Propulsive efficiencies
 
     for i ∈ eachindex(θ75_range)
-        J[i]   = v∞s[i] ./ (2*Stm.span*(Ωs[i]/C.tr2rad))
-        C_T[i] = 4 * thrusts[i] ./ ((2*Stm.span)^4*ρ*Ωs[i].^2)
-        C_P[i] = 4 * powers[i] ./ ((2*Stm.span)^5*ρ*Ωs[i].^3)
+        ns     = Ωs/C.tr2rad;
+        J[i]   = v∞s[i] ./ (2*Stm.span*ns[i])
+        C_T[i] = 4 * thrusts[i] ./ ((2*Stm.span)^4*ρ*ns[i].^2)
+        C_P[i] = 4 * powers[i] ./ ((2*Stm.span)^5*ρ*ns[i].^3)
         eta[i] = C_T[i] ./ C_P[i] .* J[i]
     end
 
