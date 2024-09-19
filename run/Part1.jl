@@ -10,15 +10,17 @@ distribution of the velocity triangles, torque and thrust.
 module Part1
 
 using GLMakie  # TODO: find a way to conditionally load GLMakie
+using Unitful
+
 using BEMT
 using ..Statement: Statement as Stm
 
 # Operating conditions
-const Ω   = 800       * C.rpm2rads  # Rotation speed [rad/s]
-const θ75 = [25, 35]  * C.deg2rad   # Collective pitches [rad]
-const v∞  = [90, 135] * C.mph2ms    # Wind speeds [m/s]
-const ρ   = 1.2255                  # Density of the air [kg/m³]
-const μ   = 17.89e-6                # Dynamic viscosity of the air [Pa*s]
+const Ω   = 800u"rpm"           # Rotation speed
+const θ75 = [25, 35]*u"°"       # Collective pitches
+const v∞  = [90, 135]*u"mi/hr"  # Wind speeds
+const ρ   = 1.2255u"kg/m^3"     # Density of the air
+const μ   = 17.89e-6u"Pa*s"     # Dynamic viscosity of the air
 const oper1 = OperatingConditions(Ω, θ75[1], v∞[1], ρ, μ)
 const oper2 = OperatingConditions(Ω, θ75[2], v∞[2], ρ, μ)
 

@@ -13,9 +13,11 @@ that are based on the blade element momentum theory.
 """
 module BEMT
 
-include("Constants.jl")
-import .Constants: Constants as C
-export C
+using Unitful
+
+# include("Constants.jl")
+# import .Constants: Constants as C
+# export C
 
 include("propellers.jl")
 export Propeller, PropellerGeometry, AirfoilPolar

@@ -8,16 +8,18 @@ Compare your results with the experimental results.
 module Part2
 
 using GLMakie  # TODO: find a way to conditionally load GLMakie
+using Unitful
+
 using BEMT
 using ..Statement: Statement as Stm
 
 # Operating conditions
-const Ω_range      = [1000, 1000, 800, 800, 800, 700, 700] .* C.rpm2rads  # Rotation speeds [rad/s]
-const θ75deg_range = [15,   20,   25,  30,  35,  40,  45]                 # Collective pitches [°]
-const θ75_range    = θ75deg_range .* C.deg2rad                            # Collective pitches [rad]
-const v∞_range     = collect(30:5:115) * C.mph2ms                         # Wind speeds [m/s]
-const ρ            = 1.2255                                               # Density of the air [kg/m³]
-const μ            = 17.89e-6                                             # Dynamic viscosity of the air [Pa*s]
+const Ω_range      = [1000, 1000, 800, 800, 800, 700, 700]u"rpm"  # Rotation speeds
+const θ75deg_range = [15,   20,   25,  30,  35,  40,  45]u"°"     # Collective pitches (deg)
+const θ75_range    = θ75deg_range .|> u"rad"                      # Collective pitches (rad)
+const v∞_range     = collect(30:5:115)u"mi/hr"                    # Wind speeds
+const ρ            = 1.2255u"kg/m^3"                              # Density of the air
+const μ            = 17.89e-6u"Pa*s"                              # Dynamic viscosity of the air
 
 """Execute the second part of the project."""
 function main(args)
@@ -39,13 +41,13 @@ Calculate the propeller thrust and power for an increasing wind speed, up to a m
 Stop the computation when the computed thrust becomes negative.
 """
 function reproduce_report(args)
-    thrusts = [Float64[] for _ ∈ eachindex(θ75_range)]
-    powers  = [Float64[] for _ ∈ eachindex(θ75_range)]
-    Ωs      = [Float64[] for _ ∈ eachindex(θ75_range)]
-    v∞s     = [Float64[] for _ ∈ eachindex(θ75_range)]
+    thrusts = [Float64[]*u"N"     for _ ∈ eachindex(θ75_range)]
+    powers  = [Float64[]*u"W"     for _ ∈ eachindex(θ75_range)]
+    Ωs      = [Float64[]*u"rad/s" for _ ∈ eachindex(θ75_range)]
+    v∞s     = [Float64[]*u"m/s"   for _ ∈ eachindex(θ75_range)]
 
     for θ75_index ∈ eachindex(θ75_range)
-        max_thrust = 0
+        max_thrust = 0u"N"
         v∞_index = 1
         Ω = Ω_range[θ75_index]
         v∞ = v∞_range[v∞_index]
@@ -55,7 +57,7 @@ function reproduce_report(args)
             sol = bem(Stm.prop, oper, sdiv=args["sdiv"])
             max_thrust = max(sol.thrust, max_thrust)
 
-            sol.thrust <= 0 && break
+            sol.thrust <= 0u"N" && break
 
             push!(Ωs[θ75_index],      oper.Ω)
             push!(v∞s[θ75_index],     oper.v∞)
@@ -87,13 +89,14 @@ function performance_coefficients(thrusts, powers, Ωs, v∞s)
     eta = [Float64[] for _ ∈ eachindex(θ75_range)]  # Propulsive efficiencies
 
     for i ∈ eachindex(θ75_range)
-        ns     = Ωs/C.tr2rad;
-        J[i]   = v∞s[i] ./ (2*Stm.span*ns[i])
-        C_T[i] = 4 * thrusts[i] ./ ((2*Stm.span)^4*ρ*ns[i].^2)
-        C_P[i] = 4 * powers[i] ./ ((2*Stm.span)^5*ρ*ns[i].^3)
+        n      = Ωs[i] .|> u"rpm";
+        J[i]   = v∞s[i] ./ (2*Stm.span*n)
+        C_T[i] = 4 * thrusts[i] ./ ((2*Stm.span)^4*ρ*n.^2)
+        C_P[i] = 4 * powers[i] ./ ((2*Stm.span)^5*ρ*n.^3)
         eta[i] = C_T[i] ./ C_P[i] .* J[i]
     end
 
+    # TODO: use benefits of Unitftul
     # NOTE: to translate in imperial units, use:
     # J   = J   / C.mph2ms * C.ft2m * C.tr2rad
     # C_T = C_T / C.lbf2n * C.ft2m^4 * C.slug2kg / C.ft2m^3 * C.tr2rad^2

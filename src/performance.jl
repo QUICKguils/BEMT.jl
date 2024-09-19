@@ -1,21 +1,21 @@
 using Logging
 using Interpolations
 
-struct OperatingConditions{R<:Real}
-    Ω::R    # Rotation speed [rad/s]
-    θ75::R  # Collective pitch [rad]
-    v∞::R   # Wind speed [m/s]
-    ρ::R    # Density of the air [kg/m³]
-    μ::R    # Dynamic viscosity of the air [Pa*s]
+struct OperatingConditions
+    Ω::typeof(1.0u"rad/s")   # Rotation speed
+    θ75::typeof(1.0u"rad")   # Collective pitch
+    v∞::typeof(1.0u"m/s")    # Wind speed
+    ρ::typeof(1.0u"kg/m^3")  # Density of the air
+    μ::typeof(1.0u"Pa*s")    # Dynamic viscosity of the air
 end
 
-struct LocalGeometry{I<:Integer, R<:Real}
-    span::R      # Span of one blade [m]
-    n_blades::I  # Number of blades
-    r::R         # Radial position of the local geometry [m]
-    dr::R        # Streamtube width [m]
-    chord::R     # Chord [m]
-    geopitch::R  # Geometric pitch [m]
+struct LocalGeometry
+    span::typeof(1.0u"m")      # Span of one blade
+    n_blades::typeof(1)        # Number of blades
+    r::typeof(1.0u"m")         # Radial position of the local geometry
+    dr::typeof(1.0u"m")        # Streamtube width
+    chord::typeof(1.0u"m")     # Chord
+    geopitch::typeof(1.0u"m")  # Geometric pitch
 end
 
 """Outer constructor method, to directly use a Propeller object."""
@@ -23,23 +23,23 @@ function LocalGeometry(prop::Propeller, r, dr, chord, geopitch)
     LocalGeometry(prop.geometry.span, prop.geometry.n_blades, r, dr, chord, geopitch)
 end
 
-struct BemSolution{R<:Real, Vec<:Vector{R}}
-    thrust::R         # Total thrust provided by the propeller [N]
-    torque::R         # Total torque provided by the propeller [N*m]
-    r_dist::Vec       # Radial position of the local geometries [m]
-    thrust_dist::Vec  # Spanwise distribution of the stream tubes thrust [N]
-    torque_dist::Vec  # Spanwise distribution of the stream tubes torque [N*m]
-    va2_dist::Vec     # Spanwise distribution of va2 (= wa2) [m/s]
-    vu2_dist::Vec     # Spanwise distribution of vu2 [m/s]
-    wu2_dist::Vec     # Spanwise distribution of wu2 [m/s]
+struct BemSolution
+    thrust::typeof(1.0u"N")                 # Total thrust provided by the propeller
+    torque::typeof(1.0u"N*m")               # Total torque provided by the propeller
+    r_dist::Vector{typeof(1.0u"m")}         # Radial position of the local geometries
+    thrust_dist::Vector{typeof(1.0u"N")}    # Spanwise distribution of the stream tubes thrust
+    torque_dist::Vector{typeof(1.0u"N*m")}  # Spanwise distribution of the stream tubes torque
+    va2_dist::Vector{typeof(1.0u"m/s")}     # Spanwise distribution of va2 (= wa2)
+    vu2_dist::Vector{typeof(1.0u"m/s")}     # Spanwise distribution of vu2
+    wu2_dist::Vector{typeof(1.0u"m/s")}     # Spanwise distribution of wu2
 end
 
-struct LocalBemSolution{R<:Real}
-    thrust::R  # Thrust generated in the local stream tube [N]
-    torque::R  # Torque generated in the local stream tube [N*m]
-    va2::R     # Local axial speed [m/s]
-    vu2::R     # Local absolute tangential speed [m/s]
-    wu2::R     # Local relative tangential speed [m/s]
+struct LocalBemSolution
+    thrust::typeof(1.0u"N")    # Thrust generated in the local stream tube
+    torque::typeof(1.0u"N*m")  # Torque generated in the local stream tube
+    va2::typeof(1.0u"m/s")     # Local axial speed
+    vu2::typeof(1.0u"m/s")     # Local absolute tangential speed
+    wu2::typeof(1.0u"m/s")     # Local relative tangential speed
 end
 
 """
@@ -61,11 +61,11 @@ function bem(prop::Propeller, oper::OperatingConditions; sdiv=20)
     geopitches = linear_interpolation(
         prop.geometry.stations, prop.geometry.geopitches, extrapolation_bc=Line())(r_dist)
 
-    thrust_dist = zeros(size(r_dist))
-    torque_dist = zeros(size(r_dist))
-    va2_dist    = zeros(size(r_dist))
-    vu2_dist    = zeros(size(r_dist))
-    wu2_dist    = zeros(size(r_dist))
+    thrust_dist = zeros(size(r_dist))*u"N"
+    torque_dist = zeros(size(r_dist))*u"N*m"
+    va2_dist    = zeros(size(r_dist))*u"m/s"
+    vu2_dist    = zeros(size(r_dist))*u"m/s"
+    wu2_dist    = zeros(size(r_dist))*u"m/s"
 
     # Compute the thrust and torque for all of these locations
     for i ∈ eachindex(r_dist)
@@ -98,21 +98,22 @@ for the specified airfoil polar data `airfoil` and operating conditions `oper`.
 """
 function local_bem(
     lgeom::LocalGeometry, airfoil::AirfoilPolar, oper::OperatingConditions;
-    rtol=1e-3, atol=1e-2, maxiter=50
+    rtol=1e-3, atol=1e-2u"m/s", maxiter=50
 )
     # FIX: crashes for v∞=0m/s
     # The mass flow in null, hence va3_new and vu2p_new are NaN.
 
     # Initial speed guesstimates
     va3 = oper.v∞
-    vu2p = 0
+    vu2p = 0u"m/s"
 
     # Initialize computed quantities
     n_iter = 0
-    thrust = torque = 0
-    va2 = vu2 = wu2 = 0
+    thrust = 0u"N"
+    torque = 0u"N*m"
+    va2 = vu2 = wu2 = 0u"m/s"
 
-    stagger(r::Real) = atan(lgeom.geopitch, 2π*r)
+    stagger(r::typeof(1.0u"m")) = atan(lgeom.geopitch, 2π*r)
     pitch = stagger(lgeom.r) - stagger(0.75*lgeom.span) + oper.θ75
 
     # Linear interpolator methods for lift and drag coefficients
