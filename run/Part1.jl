@@ -46,14 +46,14 @@ function plot_sol(sol1::BemSolution, sol2::BemSolution)
 
     # Thrust distribution along the blades span
     ax1 = Axis(fig[1, 1], title="Thrust distribution", xlabel=L"r/R", ylabel=L"$dT/dr$ [N/m]")
-    scatterlines!(ax1, sol1.r_dist/Stm.span, sol1.thrust_dist/dr1, label="Oper. 1")
-    scatterlines!(ax1, sol2.r_dist/Stm.span, sol2.thrust_dist/dr1, label="Oper. 2")
+    scatterlines!(ax1, sol1.r_dist/Stm.span, sol1.thrust_dist/dr1 .|> u"N/m" .|> ustrip, label="Oper. 1")
+    scatterlines!(ax1, sol2.r_dist/Stm.span, sol2.thrust_dist/dr2 .|> u"N/m" .|> ustrip, label="Oper. 2")
     axislegend(ax1, position=:lt)
 
     # Power distribution along the blades span
     ax2 = Axis(fig[1, 2], title="Power distribution", xlabel=L"r/R", ylabel=L"$dP/dr$ [W/m]")
-    scatterlines!(ax2, sol1.r_dist/Stm.span, sol1.torque_dist*Ω/dr2, label="Oper. 1")
-    scatterlines!(ax2, sol2.r_dist/Stm.span, sol2.torque_dist*Ω/dr2, label="Oper. 2")
+    scatterlines!(ax2, sol1.r_dist/Stm.span, sol1.torque_dist*Ω/dr1 .|> u"W/m" .|> ustrip, label="Oper. 1")
+    scatterlines!(ax2, sol2.r_dist/Stm.span, sol2.torque_dist*Ω/dr2 .|> u"W/m" .|> ustrip, label="Oper. 2")
     axislegend(ax2, position=:lt)
 
     display(fig)

@@ -117,7 +117,7 @@ function plot_sol(J, C_T, C_P, eta)
 
     # Plot the perfomance coefficients vs advance ratio, for different collective pitches
     for i ∈ eachindex(θ75_range)
-        scatterlines!(ax_eta,    J[i], eta[i], label="$(θ75deg_range[i])°")
+        scatterlines!(ax_eta,    J[i], eta[i], label="$(θ75deg_range[i])")
         scatterlines!(ax_thrust, J[i], C_T[i])
         scatterlines!(ax_power,  J[i], C_P[i])
     end
