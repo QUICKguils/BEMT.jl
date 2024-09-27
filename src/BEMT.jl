@@ -15,10 +15,6 @@ module BEMT
 
 using Unitful
 
-# include("Constants.jl")
-# import .Constants: Constants as C
-# export C
-
 include("propellers.jl")
 export Propeller, PropellerGeometry, AirfoilPolar
 
